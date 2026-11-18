@@ -1,7 +1,15 @@
 import { query } from "../../db/pool.js";
 
-export async function list() {
-  const { rows } = await query("SELECT * FROM tasks ORDER BY created_at DESC, id DESC");
+export async function list({ status, limit, offset }) {
+  const { rows } = await query(
+    `
+    SELECT * FROM tasks 
+    WHERE ($1::text IS NULL OR status = $1)
+    ORDER BY created_at DESC, id DESC
+    LIMIT $2 OFFSET $3
+    `,
+    [status ?? null, limit, offset],
+  );
   return rows;
 }
 
