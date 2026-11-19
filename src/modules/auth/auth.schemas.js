@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const email = z.string().z.trim().z.toLowerCase().email().max(255);
+const email = z.string().trim().toLowerCase().email().max(255);
 
 const password = z.string().min(8).max(72);
 

@@ -1,14 +1,15 @@
 import { query } from "../../db/pool.js";
 
-export async function list({ status, limit, offset }) {
+export async function list({ userId, status, limit, offset }) {
   const { rows } = await query(
     `
     SELECT * FROM tasks 
-    WHERE ($1::text IS NULL OR status = $1)
+    WHERE ($1::int IS NULL OR user_id = $1)
+    AND ($2::text IS NULL OR status = $2)
     ORDER BY created_at DESC, id DESC
-    LIMIT $2 OFFSET $3
+    LIMIT $3 OFFSET $4
     `,
-    [status ?? null, limit, offset],
+    [userId ?? null, status ?? null, limit, offset],
   );
   return rows;
 }
@@ -18,12 +19,11 @@ export async function findById(id) {
   return rows[0] ?? null;
 }
 
-export async function create({ title, description = null, status = "todo" }) {
-  const { rows } = await query("INSERT INTO tasks (title, description, status) VALUES ($1, $2, $3) RETURNING *", [
-    title,
-    description,
-    status,
-  ]);
+export async function create(userId, { title, description = null, status = "todo" }) {
+  const { rows } = await query(
+    "INSERT INTO tasks (user_id, title, description, status) VALUES ($1, $2, $3, $4) RETURNING *",
+    [userId, title, description, status],
+  );
   return rows[0];
 }
 

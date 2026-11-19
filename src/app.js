@@ -5,6 +5,7 @@ import morgan from "morgan";
 import { env } from "./config/env.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
 import taskRoutes from "./modules/tasks/tasks.routes.js";
+import authRoutes from "./modules/auth/auth.routes.js";
 
 export const app = express();
 
@@ -17,6 +18,7 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
+app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/tasks", taskRoutes);
 
 app.use(notFound);
