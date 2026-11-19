@@ -1,12 +1,15 @@
 import { app } from "./app.js";
 import { env } from "./config/env.js";
 import { pool } from "./db/pool.js";
+import * as refreshTokens from "./modules/auth/refreshTokens.repository.js";
 
 await pool.query("SELECT 1");
 
 const server = app.listen(env.PORT, () => {
   console.log(`API listening on http://localhost:${env.PORT}`);
 });
+
+setInterval(() => refreshTokens.purgeExpired().catch(console.error), 6 * 60 * 60 * 1000).unref();
 
 function shutdown(signal) {
   console.log(`${signal} received: closing server`);
