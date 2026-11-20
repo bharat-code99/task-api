@@ -6,6 +6,7 @@ import { env } from "./config/env.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
 import taskRoutes from "./modules/tasks/tasks.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
+import userRoutes from "./modules/users/users.routes.js";
 
 export const app = express();
 
@@ -20,6 +21,7 @@ app.get("/health", (req, res) => {
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/tasks", taskRoutes);
+app.use("/api/v1/users", userRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
