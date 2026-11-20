@@ -3,6 +3,7 @@ import helmet from "helmet";
 import cors from "cors";
 import morgan from "morgan";
 import { env } from "./config/env.js";
+import { authLimiter } from "./middleware/rateLimit.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
 import taskRoutes from "./modules/tasks/tasks.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
@@ -19,9 +20,9 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/tasks", taskRoutes);
+app.use("/api/v1/auth", authLimiter, authRoutes);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/tasks", taskRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
